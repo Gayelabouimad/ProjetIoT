@@ -24,9 +24,11 @@ client.on('connect', function () {
 // When someone else publishes data
 client.on('message', function (topic, message) {
     // message is Buffer
-    console.log("Got a message", message.toString());
-    // let message2 = JSON.parse(message.toString());
-    client.end()
+    let message_str = JSON.parse(message.toString());
+    obj = message_str.object.payload;
+    console.log("obj----------------------", obj );
+
+    // client.end()
   })
 // --------------------------------------
 
