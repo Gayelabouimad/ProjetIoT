@@ -9,6 +9,9 @@
 # How to run the Project ?
 
 - from ./Back-End in CMD run the following command to run the backend server :
+- we sgould download node js 
+- in the terminal >cd .\Back-End\
+> npm install
 
 > ``` node server.js ```
 

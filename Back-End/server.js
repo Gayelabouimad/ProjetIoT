@@ -4,7 +4,8 @@ var express = require('express');
 // creating the app
 var app = express();
 
-
+var body_parser= require('body-parser');
+app.use(body_parser);
 // --------------------------------------
 var mqtt = require('mqtt');
 // Client Connection
@@ -34,9 +35,39 @@ client.on('message', function (topic, message) {
 
 
 
+async function GetData (dbName, CollName){
+    var that=this;
+    MongoClient = require('mongodb').MongoClient;
+    Mongo = require('mongodb');
+    DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
+    console.log("i am here");
+    try{
+        var response = await MongoClient.connect(DBConnectionString, {
+            useNewUrlParser: true, useUnifiedTopology: true }
+            );
+            var database = await response.db(dbName);
+            const collection = await database.collection(CollName);
+            const item = await collection.find();
+            console.log("Itemsss ", item);
+            const document = await item.toArray();
+            console.log("document ", document);
+    }catch(err){
+        return err;
+
+    }
+}
+// Client connection to MongoDb
+
+console.log("obj----------------------" );
 // creating first route
-app.get('/', function(req, res){
-   res.send("Hello From Main route");
+app.get('/', async function(req, res){
+    try{
+        var reponse = await GetData("IoT_Data","Classrooms") ;
+        res.send(response);
+
+    }catch(err){
+        res.send(err)
+    }
 });
 
 app.listen(3000, () => {
