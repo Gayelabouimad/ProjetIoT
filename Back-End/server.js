@@ -5,7 +5,7 @@ var express = require('express');
 var app = express();
 
 var body_parser= require('body-parser');
-app.use(body_parser);
+app.use(body_parser.json());
 // --------------------------------------
 var mqtt = require('mqtt');
 // Client Connection
@@ -48,9 +48,9 @@ async function GetData (dbName, CollName){
             var database = await response.db(dbName);
             const collection = await database.collection(CollName);
             const item = await collection.find();
-            console.log("Itemsss ", item);
+            
             const document = await item.toArray();
-            console.log("document ", document);
+            return document;
     }catch(err){
         return err;
 
@@ -60,10 +60,13 @@ async function GetData (dbName, CollName){
 
 console.log("obj----------------------" );
 // creating first route
-app.get('/', async function(req, res){
+app.get('/', function(req, res){
     try{
-        var reponse = await GetData("IoT_Data","Classrooms") ;
-        res.send(response);
+        GetData("IoT_Data","Classrooms").then((response) => {
+            console.log(response);
+            res.send(response);
+        })
+      
 
     }catch(err){
         res.send(err)
