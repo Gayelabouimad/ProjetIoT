@@ -6,7 +6,7 @@ var app = express();
 
 
 // --------------------------------------
-var mqtt = require('mqtt')
+var mqtt = require('mqtt');
 // Client Connection
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
