@@ -61,12 +61,27 @@ async function GetData (dbName, CollName){
 console.log("obj----------------------" );
 // creating first route
 app.get('/', function(req, res){
+    res.send("Hello from root");
+});
+
+app.get("/getClassrooms", function(req, res){
     try{
         GetData("IoT_Data","Classrooms").then((response) => {
             console.log(response);
             res.send(response);
         })
-      
+
+    }catch(err){
+        res.send(err)
+    }
+});
+
+app.get("/getEnergy_Consumption", function(req, res){
+    try{
+        GetData("IoT_Data","Energy_Consumption").then((response) => {
+            console.log(response);
+            res.send(response);
+        })
 
     }catch(err){
         res.send(err)
