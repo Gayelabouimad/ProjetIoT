@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
-export default function LinksScreen() {
+export default function StatsScreen() {
   return (
     <ScrollView style={styles.container}>
 
@@ -9,9 +9,10 @@ export default function LinksScreen() {
   );
 }
 
-LinksScreen.navigationOptions = {
-  title: 'Links',
+StatsScreen.navigationOptions = {
+  title: 'Stats',
 };
+
 
 const styles = StyleSheet.create({
   container: {
