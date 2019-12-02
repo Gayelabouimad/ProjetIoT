@@ -34,18 +34,17 @@ export default class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         <ScrollView
-          style={styles.container}
           contentContainerStyle={styles.contentContainer}>
           <View>
             <Text style={styles.Welcome}>
               Welcome to campus dashboard
             </Text>
           </View>
-          <View style={{ margin: 10 }}>
+          <View style={{ margin: 15 }}>
             <Text style={{fontSize: 20}}>
               The list below describes the state of each room on campus
             </Text>
-            <View>
+            <View style={styles.cardShadow }>
               {this.state.classrooms.map((item, key) => {
                 return (
                   <View key={key} style={styles.row}>
@@ -75,6 +74,7 @@ HomeScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+
   Welcome: {
     fontSize: 25,
     margin: 20,
@@ -90,5 +90,24 @@ const styles = StyleSheet.create({
     padding: 5,
     borderBottomColor: "#DCDCDC",
     borderBottomWidth: 1
-  }
+  },
+  // CardContainer: {
+  //   flex: 1,
+  //   flexDirection: 'column',
+  //   marginHorizontal: 15,
+  //   marginVertical: 10,
+  // },
+  cardShadow: {
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.39,
+    shadowRadius: 8.3,
+    elevation: 13,
+    borderRadius: 5,
+    marginVertical: 15
+  },
 });
