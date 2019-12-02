@@ -1,6 +1,5 @@
 
 const getClassrooms = async () => {
-    console.log("I AM HERE");
   const URI = "http://192.168.16.6:3000/getClassrooms";
   try {
     const response = await fetch(URI, {
@@ -10,9 +9,7 @@ const getClassrooms = async () => {
         'Content-Type': 'application/json',
       })
     });
-    console.log("waiting for response");
     res = await response.json();
-    console.log(res);
     if (response.status === 200) {
       return res;
     }
@@ -32,9 +29,7 @@ const getConsumption = async () => {
         'Content-Type': 'application/json',
       })
     });
-    console.log("waiting for response");
     res = await response.json();
-    console.log(res);
     if (response.status === 200) {
       return res;
     }
