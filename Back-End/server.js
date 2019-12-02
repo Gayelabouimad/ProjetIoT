@@ -1,19 +1,23 @@
 // importing the express module
 var express = require('express');
-
 // creating the app
 var app = express();
-
+// Required to parse json
 var body_parser= require('body-parser');
 app.use(body_parser.json());
+
+
 // --------------------------------------
+// Connection to MQTT Broker
 var mqtt = require('mqtt');
+
 // Client Connection
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
+// On connection performed
 client.on('connect', function () {
-    console.log("Connected")
-    // Client Subscription
+    console.log("Connected");
+    // Client Subscription to Topic
     client.subscribe('application/19/device/804a2bad98eef9b1/rx', function (err) {
         console.log("Subscribed");
         if(err){
@@ -21,73 +25,74 @@ client.on('connect', function () {
         }
     })
 })
-
 // When someone else publishes data
 client.on('message', function (topic, message) {
     // message is Buffer
     let message_str = JSON.parse(message.toString());
     obj = message_str.object.payload;
-    console.log("obj----------------------", obj );
-
+    console.log("obj - ", obj );
     // client.end()
-  })
+})
 // --------------------------------------
 
+var MGresponse;
+var database;
 
-
-async function GetData (dbName, CollName){
-    var that=this;
-    MongoClient = require('mongodb').MongoClient;
-    Mongo = require('mongodb');
-    DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
-    console.log("i am here");
+async function GetData (CollName){
     try{
-        var response = await MongoClient.connect(DBConnectionString, {
-            useNewUrlParser: true, useUnifiedTopology: true }
-            );
-            var database = await response.db(dbName);
-            const collection = await database.collection(CollName);
-            const item = await collection.find();
-            
-            const document = await item.toArray();
-            return document;
+        const collection = await database.collection(CollName);
+        const item = await collection.find().toArray();
+        return item;
     }catch(err){
         return err;
-
     }
 }
 // Client connection to MongoDb
 
-console.log("obj----------------------" );
-// creating first route
+// Main Route
 app.get('/', function(req, res){
     res.send("Hello from root");
 });
 
+// Testing Route
+app.get('/test', function(req, res){
+    res.send("Hello from root");
+});
+
+// Get all the rows in Classrooms Collection
 app.get("/getClassrooms", function(req, res){
     try{
-        GetData("IoT_Data","Classrooms").then((response) => {
-            console.log(response);
-            res.send(response);
+        GetData("Classrooms").then((data) => {
+            res.send(data);
         })
-
     }catch(err){
         res.send(err)
     }
 });
 
-app.get("/getEnergy_Consumption", function(req, res){
+// Get all the rows in Energy_Consumption Collection
+app.get("/getEnergyConsumption", function(req, res){
     try{
-        GetData("IoT_Data","Energy_Consumption").then((response) => {
-            console.log(response);
-            res.send(response);
+        GetData("Energy_Consumption").then((data) => {
+            res.send(data);
         })
-
     }catch(err){
         res.send(err)
     }
 });
 
-app.listen(3000, () => {
+app.listen(3000, "192.168.16.6" , async () => {
     console.log("Listening on port: ", 3000);
+    MongoClient = require('mongodb').MongoClient;
+    DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
+    try{
+        MGresponse = await MongoClient.connect(DBConnectionString, 
+            {
+            useNewUrlParser: true, 
+            useUnifiedTopology: true 
+        });
+        database = await MGresponse.db("IoT_Data");
+    }catch(err){
+        return err;
+    }
 });
