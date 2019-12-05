@@ -15,14 +15,13 @@ var mqtt = require('mqtt');
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
 //Updating the data
-async function Update(msg){
+async function Update(msg,numero_heures){
      try{
         id=msg.devEUI;
         console.log("we're here");
         const collection = await database.collection("Energy_Consumption");
-        const item = await collection.find().toArray();
         console.log("i am here");
-        const update= await collection.update({Device_EUI: id}, {$set :{NbHours: hours}});
+        const update= await collection.update({Device_EUI: id}, {$set :{NbHours: numero_heures}});
         if(update){
             console.log("update worked");
         }else{
@@ -33,6 +32,24 @@ async function Update(msg){
     }catch(err){
         return err;
     }
+}
+async function Update_2(msg,b){
+    try{
+       id=msg.devEUI;
+       console.log("we're here");
+       const collection = await database.collection("Classrooms");
+       console.log("i am here");
+       const update= await collection.update({Device_EUI: id}, {$set :{isOn:b}});
+       if(update){
+           console.log("update worked");
+       }else{
+           console.error("update not working");
+       }
+       return update;
+       
+   }catch(err){
+       return err;
+   }
 }
 
 // On connection performed
@@ -71,7 +88,15 @@ client.on('message', function (topic, message) {
         if(obj < 3){
             Update(message_str,10).then((result) => {
                 console.log("i am in .then");
-                //console.log("result", result);
+                console.log("result", result);
+            });
+            Update_2(message_str,true).then((result) => {
+                console.log("i am in .then");
+            });
+        }
+        else {
+            Update_2(message_str,false).then((result) => {
+                console.log("i am in .then");
             });
         }
 
@@ -128,7 +153,7 @@ app.get("/getEnergyConsumption", function(req, res){
     }
 });
 
-app.listen(3000, "10.81.8.200" , async () => {
+app.listen(3000, "10.81.8.243" , async () => {
     console.log("Listening on port: ", 3000);
     MongoClient = require('mongodb').MongoClient;
     DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
