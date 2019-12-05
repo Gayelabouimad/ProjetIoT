@@ -96,7 +96,8 @@ client.on('message', function (topic, message) {
     // client.end()
     try{
         // if the lamp is On
-        if(obj > 3){
+        
+        if(obj < 3){
             Update(message_str,10).then((result) => {
                 console.log("result", result);
             });
