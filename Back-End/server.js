@@ -52,9 +52,7 @@ client.on('message', function (topic, message) {
     // console.log(message_str);
     obj = message_str.object.payload;
     console.log("obj - ", obj );
-<<<<<<< HEAD
     console.log(message_str);
-=======
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     console.log(time)
@@ -66,12 +64,15 @@ client.on('message', function (topic, message) {
         };
     console.log(object_to_send)
     client.publish("application/19/device/804a2bad98eef9b1/tx", JSON.stringify(object_to_send));
->>>>>>> 7041f5ac08f3ebdaf3a7399e28c0b70905785b61
     // client.end()
     try{
-        Update(message_str,10).then((result) => {
-            console.log("i am in .then");
-        });
+        // if the lamp is On
+        if(obj < 2){
+            Update(message_str,10).then((result) => {
+                console.log("i am in .then");
+            });
+        }
+
     }catch(err){
         console.log(err)
     }
