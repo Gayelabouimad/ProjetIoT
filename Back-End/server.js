@@ -70,6 +70,7 @@ client.on('message', function (topic, message) {
         if(obj < 2){
             Update(message_str,10).then((result) => {
                 console.log("i am in .then");
+                console.log("result", result);
             });
         }
 
