@@ -14,6 +14,15 @@ var mqtt = require('mqtt');
 // Client Connection
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
+//Updating the data
+async function Update(msg,numero_heures){
+    id=msg.devEUI;
+    const collection = await database.collection("Classrooms");
+    collection.updateOne({Device_EUI: id}, {NbHours: numero_heures}, function(err, response){
+        console.log(response);
+     });
+}
+
 // On connection performed
 client.on('connect', function () {
     console.log("Connected");
@@ -43,6 +52,9 @@ client.on('message', function (topic, message) {
         };
     console.log(object_to_send)
     client.publish("application/19/device/804a2bad98eef9b1/tx", JSON.stringify(object_to_send));
+    // client.end()
+    Update(message_str,10);
+    
 })
 // --------------------------------------
 
