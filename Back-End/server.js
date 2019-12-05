@@ -32,6 +32,7 @@ client.on('message', function (topic, message) {
     obj = message_str.object.payload;
     console.log("obj - ", obj );
     // client.end()
+    console.log(message_str);
 })
 // --------------------------------------
 
@@ -81,7 +82,7 @@ app.get("/getEnergyConsumption", function(req, res){
     }
 });
 
-app.listen(3000, "192.168.16.6" , async () => {
+app.listen(3000, " 192.168.134.1" , async () => {
     console.log("Listening on port: ", 3000);
     MongoClient = require('mongodb').MongoClient;
     DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
