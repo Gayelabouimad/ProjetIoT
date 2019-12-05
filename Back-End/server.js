@@ -15,13 +15,14 @@ var mqtt = require('mqtt');
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
 //Updating the data
-async function Update(msg,numero_heures){
+async function Update(msg){
      try{
         id=msg.devEUI;
         console.log("we're here");
         const collection = await database.collection("Energy_Consumption");
+        const item = await collection.find().toArray();
         console.log("i am here");
-        const update= await collection.update({Device_EUI: id}, {$set :{NbHours: numero_heures}});
+        const update= await collection.update({Device_EUI: id}, {$set :{NbHours: hours}});
         if(update){
             console.log("update worked");
         }else{
@@ -67,10 +68,10 @@ client.on('message', function (topic, message) {
     // client.end()
     try{
         // if the lamp is On
-        if(obj < 2){
+        if(obj < 3){
             Update(message_str,10).then((result) => {
                 console.log("i am in .then");
-                console.log("result", result);
+                //console.log("result", result);
             });
         }
 
@@ -127,7 +128,7 @@ app.get("/getEnergyConsumption", function(req, res){
     }
 });
 
-app.listen(3000, "10.81.3.9" , async () => {
+app.listen(3000, "10.81.8.200" , async () => {
     console.log("Listening on port: ", 3000);
     MongoClient = require('mongodb').MongoClient;
     DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
