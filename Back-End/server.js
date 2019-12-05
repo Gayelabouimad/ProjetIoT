@@ -18,7 +18,7 @@ var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "pa
 async function Update(msg,numero_heures){
     id=msg.devEUI;
     const collection = await database.collection("Classrooms");
-    collection.update({Device_EUI: id}, {NbHours: numero_heures}, function(err, response){
+    collection.updateOne({Device_EUI: id}, {NbHours: numero_heures}, function(err, response){
         console.log(response);
      });
 }
