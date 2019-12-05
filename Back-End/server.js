@@ -49,9 +49,24 @@ client.on('connect', function () {
 client.on('message', function (topic, message) {
     // message is Buffer
     let message_str = JSON.parse(message.toString());
+    // console.log(message_str);
     obj = message_str.object.payload;
     console.log("obj - ", obj );
+<<<<<<< HEAD
     console.log(message_str);
+=======
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    console.log(time)
+    let base64data = Buffer.from("100").toString('base64');
+    var object_to_send = {
+        "confirmed": false,
+        "fPort": 1,                            
+        "data": base64data
+        };
+    console.log(object_to_send)
+    client.publish("application/19/device/804a2bad98eef9b1/tx", JSON.stringify(object_to_send));
+>>>>>>> 7041f5ac08f3ebdaf3a7399e28c0b70905785b61
     // client.end()
     try{
         Update(message_str,10).then((result) => {
@@ -110,9 +125,7 @@ app.get("/getEnergyConsumption", function(req, res){
     }
 });
 
-
-
-app.listen(3000, "10.81.8.200" , async () => {
+app.listen(3000, "10.81.3.9" , async () => {
     console.log("Listening on port: ", 3000);
     MongoClient = require('mongodb').MongoClient;
     DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';

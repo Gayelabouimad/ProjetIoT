@@ -150,3 +150,12 @@ app.listen(3000, () => {
 
 
 # Theoretical Analysis
+
+The calculation of the energy consumption is based on the wattage input consumed by light bulbs.
+
+It has been identified that the used light bulbs are : Philips 36 W/4 Pin fitting 2G11 that consume 36 Watts for the 4 linear tubes.
+
+The total daily energy consumption (EC) is calculated by multiplying the total number of lamps (N), power consumed by the lamp (W), and total hours of operation (OH), which is assumed 8 hours. The formula is interpreted in the following equation :
+EC=(N*W*OH)/1000 ( in kW/hr)
+
+
