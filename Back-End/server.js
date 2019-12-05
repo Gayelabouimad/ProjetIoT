@@ -32,7 +32,7 @@ client.on('message', function (topic, message) {
     obj = message_str.object.payload;
     console.log("obj - ", obj );
     // client.end()
-    console.log(message_str);
+    console.log(message_str.devEUI);
 })
 // --------------------------------------
 
