@@ -15,13 +15,27 @@ var mqtt = require('mqtt');
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
 //Updating the data
-async function Update(msg,numero_heures){
+async function Update(msg){
      try{
         id=msg.devEUI;
-        console.log("we're here");
-        const collection = await database.collection("Energy_Consumption");
-        console.log("i am here");
-        const update= await collection.update({Device_EUI: id}, {$set :{NbHours: numero_heures}});
+        const collection1 = await database.collection("Energy_Consumption");
+        const item1 = await collection1.find().toArray();
+        const collection2 = await database.collection("Classrooms");
+        const item2 = await collection2.find().toArray();
+        var hours;
+        for (i in item1){
+            if(item1[i].Device_EUI=id){
+                hours=item1[i].NbHours + 1;
+            }
+        }
+        var lampes;
+        for (i in item2){
+            if(item2[i].Device_EUI=id){
+                lampes=item2[i].NbLampes;
+            }
+        }
+        let cons = hours*lampes*36/1000;
+        const update= await collection1.update({Device_EUI: id}, {$set :{NbHours: hours, Consumption: cons}});
         if(update){
             console.log("update worked");
         }else{
@@ -36,9 +50,7 @@ async function Update(msg,numero_heures){
 async function Update_2(msg,b){
     try{
        id=msg.devEUI;
-       console.log("we're here");
        const collection = await database.collection("Classrooms");
-       console.log("i am here");
        const update= await collection.update({Device_EUI: id}, {$set :{isOn:b}});
        if(update){
            console.log("update worked");
@@ -69,7 +81,6 @@ client.on('message', function (topic, message) {
     let message_str = JSON.parse(message.toString());
     // console.log(message_str);
     obj = message_str.object.payload;
-    console.log("obj - ", obj );
     console.log(message_str);
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -85,9 +96,8 @@ client.on('message', function (topic, message) {
     // client.end()
     try{
         // if the lamp is On
-        if(obj < 3){
+        if(obj > 3){
             Update(message_str,10).then((result) => {
-                console.log("i am in .then");
                 console.log("result", result);
             });
             Update_2(message_str,true).then((result) => {
@@ -153,7 +163,7 @@ app.get("/getEnergyConsumption", function(req, res){
     }
 });
 
-app.listen(3000, "10.81.8.243" , async () => {
+app.listen(3000, "10.81.8.200" , async () => {
     console.log("Listening on port: ", 3000);
     MongoClient = require('mongodb').MongoClient;
     DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
