@@ -14,6 +14,15 @@ var mqtt = require('mqtt');
 // Client Connection
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
+//Updating the data
+async function Update(msg,numero_heures){
+    id=msg.devEUI;
+    const collection = await database.collection("Classrooms");
+    collection.updateOne({Device_EUI: id}, {NbHours: numero_heures}, function(err, response){
+        console.log(response);
+     });
+}
+
 // On connection performed
 client.on('connect', function () {
     console.log("Connected");
@@ -32,7 +41,8 @@ client.on('message', function (topic, message) {
     obj = message_str.object.payload;
     console.log("obj - ", obj );
     // client.end()
-    console.log(message_str.devEUI);
+    Update(message_str,10);
+    
 })
 // --------------------------------------
 
@@ -81,6 +91,8 @@ app.get("/getEnergyConsumption", function(req, res){
         res.send(err)
     }
 });
+
+
 
 app.listen(3000, "10.81.8.200" , async () => {
     console.log("Listening on port: ", 3000);
