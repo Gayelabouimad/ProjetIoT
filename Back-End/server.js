@@ -16,11 +16,22 @@ var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "pa
 
 //Updating the data
 async function Update(msg,numero_heures){
-    id=msg.devEUI;
-    const collection = await database.collection("Classrooms");
-    collection.updateOne({Device_EUI: id}, {NbHours: numero_heures}, function(err, response){
-        console.log(response);
-     });
+     try{
+        id=msg.devEUI;
+        console.log("we're here");
+        const collection = await database.collection("Test");
+        console.log("i am here");
+        const update= await collection.update({Device_EUI: id}, {$set :{NbHours: numero_heures}});
+        if(update){
+            console.log("update worked");
+        }else{
+            console.error("update not working");
+        }
+        return update;
+        
+    }catch(err){
+        return err;
+    }
 }
 
 // On connection performed
@@ -40,10 +51,17 @@ client.on('message', function (topic, message) {
     let message_str = JSON.parse(message.toString());
     obj = message_str.object.payload;
     console.log("obj - ", obj );
+    console.log(message_str);
     // client.end()
-    Update(message_str,10);
-    
-})
+    try{
+        Update(message_str,10).then((result) => {
+            console.log("i am in .then");
+        });
+    }catch(err){
+        console.log(err)
+    }
+}
+)
 // --------------------------------------
 
 var MGresponse;
