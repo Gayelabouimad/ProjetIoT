@@ -19,7 +19,7 @@ async function Update(msg,numero_heures){
      try{
         id=msg.devEUI;
         console.log("we're here");
-        const collection = await database.collection("Test");
+        const collection = await database.collection("Energy_Consumption");
         console.log("i am here");
         const update= await collection.update({Device_EUI: id}, {$set :{NbHours: numero_heures}});
         if(update){
@@ -88,6 +88,7 @@ client.on('message', function (topic, message) {
         if(obj < 3){
             Update(message_str,10).then((result) => {
                 console.log("i am in .then");
+                console.log("result", result);
             });
             Update_2(message_str,true).then((result) => {
                 console.log("i am in .then");
