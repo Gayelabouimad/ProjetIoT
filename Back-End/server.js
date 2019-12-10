@@ -64,6 +64,24 @@ async function Update_2(msg,b){
    }
 }
 
+function Respond_to_MQTT(){
+    var today = new Date();
+    // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    if(today.getHours() < 21 && today.getHours() > 7){
+        console.log("Sensor should be Up");
+        let base64data = Buffer.from("100").toString('base64');
+        var object_to_send = {
+            "confirmed": false,
+            "fPort": 1,                            
+            "data": base64data
+        };
+        console.log("object to be sent", object_to_send);
+        client.publish("application/19/device/804a2bad98eef9b1/tx", JSON.stringify(object_to_send));
+        return "Sensor is up";
+    }
+    return "Sensor is down";
+}
+
 // On connection performed
 client.on('connect', function () {
     console.log("Connected");
@@ -80,24 +98,14 @@ client.on('message', function (topic, message) {
     // message is Buffer
     let message_str = JSON.parse(message.toString());
     // console.log(message_str);
-    obj = message_str.object.payload;
-    console.log(message_str);
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    console.log(time)
-    let base64data = Buffer.from("100").toString('base64');
-    var object_to_send = {
-        "confirmed": false,
-        "fPort": 1,                            
-        "data": base64data
-        };
-    console.log(object_to_send)
-    client.publish("application/19/device/804a2bad98eef9b1/tx", JSON.stringify(object_to_send));
+    value = message_str.object.payload;
+    // Response to Arduino containing time
+    Respond_to_MQTT();
     // client.end()
     try{
         // if the lamp is On
         
-        if(obj < 3){
+        if(value < 3){
             Update(message_str,10).then((result) => {
                 console.log("result", result);
             });
@@ -130,11 +138,13 @@ async function GetData (CollName){
         return err;
     }
 }
-// Client connection to MongoDb
+// Client connection to MongoDbd
 
 // Main Route
 app.get('/', function(req, res){
-    res.send("Hello from root");
+    response = Respond_to_MQTT();
+
+    res.send("Hello from root - "+response);
 });
 
 // Testing Route
@@ -164,7 +174,7 @@ app.get("/getEnergyConsumption", function(req, res){
     }
 });
 
-app.listen(3000, "10.81.8.200" , async () => {
+app.listen(3000, "localhost" , async () => {
     console.log("Listening on port: ", 3000);
     MongoClient = require('mongodb').MongoClient;
     DBConnectionString = 'mongodb+srv://admin:admin@cluster0-p5xwn.mongodb.net/test?retryWrites=true&w=majority';
