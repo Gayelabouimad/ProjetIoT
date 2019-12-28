@@ -1,6 +1,6 @@
 
 const getClassrooms = async () => {
-  const URI = "http://192.168.16.6:3000/getClassrooms";
+  const URI = "http://192.168.1.11:3000/getClassrooms";
   try {
     const response = await fetch(URI, {
       method: 'GET',
@@ -20,7 +20,7 @@ const getClassrooms = async () => {
 };
 
 const getConsumption = async () => {
-  const URI = "http://192.168.16.6:3000/getEnergyConsumption";
+  const URI = "http://192.168.1.11:3000/getEnergyConsumption";
   try {
     const response = await fetch(URI, {
       method: 'GET',

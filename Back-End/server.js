@@ -6,7 +6,6 @@ var app = express();
 var body_parser= require('body-parser');
 app.use(body_parser.json());
 
-
 // --------------------------------------
 // Connection to MQTT Broker
 var mqtt = require('mqtt');
@@ -35,7 +34,7 @@ async function Update(msg){
             }
         }
         let cons = hours*lampes*36/1000;
-        const update= await collection1.update({Device_EUI: id}, {$set :{NbHours: hours, Consumption: cons}});
+        const update = await collection1.update({Device_EUI: id}, {$set :{NbHours: hours, Consumption: cons}});
         if(update){
             console.log("update worked");
         }else{
@@ -64,6 +63,8 @@ async function Update_2(msg,b){
    }
 }
 
+var sensor_state = "Sensor State N/A";
+
 function Respond_to_MQTT(){
     var today = new Date();
     // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -77,9 +78,9 @@ function Respond_to_MQTT(){
         };
         console.log("object to be sent", object_to_send);
         client.publish("application/19/device/804a2bad98eef9b1/tx", JSON.stringify(object_to_send));
-        return "Sensor is up";
+        sensor_state = "Sensor is up";
     }
-    return "Sensor is down";
+    sensor_state = "Sensor is down";
 }
 
 // On connection performed
@@ -142,14 +143,12 @@ async function GetData (CollName){
 
 // Main Route
 app.get('/', function(req, res){
-    response = Respond_to_MQTT();
-
-    res.send("Hello from root - "+response);
+    res.send("Hello from root - " + sensor_state);
 });
 
 // Testing Route
 app.get('/test', function(req, res){
-    res.send("Hello from root");
+    res.send("Hello from test");
 });
 
 // Get all the rows in Classrooms Collection
