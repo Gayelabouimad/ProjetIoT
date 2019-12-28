@@ -13,6 +13,12 @@ var mqtt = require('mqtt');
 // Client Connection
 var client = mqtt.connect('http://212.98.137.194:1883', {"username": "user", "password": "bonjour"})
 
+
+
+var MGresponse;
+var database;
+
+
 //Updating the data
 async function Update(msg){
      try{
@@ -127,9 +133,6 @@ client.on('message', function (topic, message) {
 )
 // --------------------------------------
 
-var MGresponse;
-var database;
-
 async function GetData (CollName){
     try{
         const collection = await database.collection(CollName);
@@ -184,6 +187,12 @@ app.listen(3000, "localhost" , async () => {
             useUnifiedTopology: true 
         });
         database = await MGresponse.db("IoT_Data");
+        if(database){
+            console.log("Database connected");
+        }
+        else{
+            console.log("Connection error to database");
+        }
     }catch(err){
         return err;
     }
